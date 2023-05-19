@@ -13,7 +13,7 @@ const YourGroups: FC<props> = ({ groups }) => {
       <ul className="grid w-40 grid-cols-3 gap-1">
         {groups.map((e, i) => (
           <Link href={`${""}`} key={i}>
-            {e.id}
+            {e.name}
           </Link>
         ))}
       </ul>

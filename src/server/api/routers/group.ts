@@ -6,20 +6,14 @@ export const groupRouter = createTRPCRouter({
   getByUser: protectedProcedure.query(async ({ ctx }) => {
     const user = ctx.session.user;
 
-    return await ctx.prisma.vote
+    return await ctx.prisma.membership
       .findMany({
-        where: {
-          voterId: user.id,
-        },
+        where: { userId: user.id },
         select: {
-          movie: {
-            select: {
-              forGroup: true,
-            },
-          },
+          group: true,
         },
       })
-      .then((list) => list.map((e) => e.movie.forGroup));
+      .then((list) => list.map((e) => e.group));
   }),
 
   create: protectedProcedure
@@ -29,6 +23,8 @@ export const groupRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input: { name } }) => {
+      const user = ctx.session.user;
+
       const alreadyExists = await ctx.prisma.group.findUnique({
         where: { name },
       });
@@ -36,7 +32,16 @@ export const groupRouter = createTRPCRouter({
       if (alreadyExists) throw new Error("This group already exists!");
 
       return await ctx.prisma.group.create({
-        data: { name },
+        data: {
+          name,
+          Members: {
+            create: [
+              {
+                userId: user.id,
+              },
+            ],
+          },
+        },
       });
     }),
 });

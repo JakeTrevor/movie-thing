@@ -9,8 +9,7 @@ const CreateGroup: NextPage = () => {
   const { mutate: create } = api.group.create.useMutation({
     onMutate: () => setToastID(toast.loading("Creating group...")),
     onError: (err) => {
-      // todo this should be prettier...
-      toast.error(`uh oh, something went wrong: ${err.message}`, {
+      toast.error(`uh oh, something went wrong:\n${err.message}`, {
         id: toastID,
       });
     },

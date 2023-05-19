@@ -18,8 +18,18 @@ datasource db {
 // models
 
 model Group {
-  name   String  @id
-  Movies Movie[]
+  name    String       @id
+  Movies  Movie[]
+  Members Membership[]
+}
+
+model Membership {
+  group     Group  @relation(fields: [groupName], references: [name])
+  member    User   @relation(fields: [userId], references: [id])
+  groupName String
+  userId    String
+
+  @@id([groupName, userId])
 }
 
 model Movie {
@@ -80,14 +90,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   Vote          Vote[]
+  groups        Membership[]
 }
 
 model VerificationToken {
