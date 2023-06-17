@@ -4,10 +4,13 @@
  *
  * We also create a few inference helpers for input and output types.
  */
+import { QueryCache } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
+import toast from "react-hot-toast";
 import superjson from "superjson";
+import { z } from "zod";
 
 import { type AppRouter } from "~/server/api/root";
 
@@ -43,6 +46,15 @@ export const api = createTRPCNext<AppRouter>({
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
+
+      queryClientConfig: {
+        queryCache: new QueryCache({
+          onError: (e) => {
+            const err = z.object({ message: z.string() }).parse(e);
+            toast.error(`uh oh, something went wrong:\n${err.message}`);
+          },
+        }),
+      },
     };
   },
   /**
