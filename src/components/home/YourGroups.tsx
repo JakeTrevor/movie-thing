@@ -9,10 +9,14 @@ interface props {
 const YourGroups: FC<props> = ({ groups }) => {
   return (
     <div>
-      <h1 className="text-3xl">Your Groups</h1>
-      <ul className="grid w-40 grid-cols-3 gap-1">
+      <h1 className="mb-3 text-3xl">Your Groups</h1>
+      <ul className="grid grid-cols-3 gap-4">
         {groups.map((e, i) => (
-          <Link href={`${""}`} key={i}>
+          <Link
+            href={`/group/${e.name}`}
+            key={i}
+            className="rounded-lg p-1 transition-all duration-200 hover:scale-110 hover:bg-slate-400/10"
+          >
             {e.name}
           </Link>
         ))}
