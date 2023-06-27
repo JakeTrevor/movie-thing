@@ -16,6 +16,16 @@ export const groupRouter = createTRPCRouter({
       .then((list) => list.map((e) => e.group));
   }),
 
+  getByName: protectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input: groupName }) => {
+      return await ctx.prisma.group.findUniqueOrThrow({
+        where: {
+          name: groupName,
+        },
+      });
+    }),
+
   create: protectedProcedure
     .input(
       z.object({
